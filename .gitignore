@@ -1,6 +1,8 @@
 # 自定義
 serviceAccountKey.json
 build
+config
+*.rdb
 
 # Logs
 logs

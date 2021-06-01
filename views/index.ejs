@@ -4,41 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>首頁</title>
     <link rel="stylesheet" href="./styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
 </head>
 <body>
-    文章標題：<input type="text" id="blog_title">
-    <textarea name="" id="" cols="30" rows="10" class="editor"></textarea>
-    <button id="go">GO</button>
-    <script src="./bundle.js"></script>
-    <script>
-        $(function(){
-
-
-            $('#go').click(() => {
-                const reg = /<img src="data:(image\/[\w\+]+);base64,([\d\w+/=]+)(?:">)/g
-                
-                const insertImgRef = uuidv4()
-                const title = $('#blog_title').val()
-                const html = editor.getData().replace(reg, `<img src="${insertImgRef}">`)
-                const insertImgs = editor.insertImgs
-                $.ajax({
-                    method: "POST",
-                    url: "/blog",
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: JSON.stringify({
-                        title, html, insertImgs, insertImgRef
-                    }),
-                    success: (result) => {
-                        window.location = result.href
-                    }
-                })
-            })
-        })
-    </script>
+    <% if( login ){ %>
+        <h1>歡迎你!! <%= user %>～</h1>
+    <% } else { %>
+        <form action="/user" method="POST" id="login">
+            【信箱】<input type="text" name="email"><br>
+            【密碼】<input type="text" name="password">
+            <button type="submit">登入</button>
+        </form>
+        <form action="/register" method="POST" id="register">
+            【信箱】<input type="text" name="email"><br>
+            【密碼】<input type="text" name="password">
+            <button type="submit">註冊</button>
+        </form>
+    <% } %>
+    <% for( let i ; blog.length > i ; i++ ){ %>
+        <div>
+            <a href="/blog/<%= blog.id %>"><%= blog.title %></a>｜<button class="del_btn" data-blogID="<%= blog.id %>">刪除</button>
+        </div>
+    <% } %>
 </body>
 </html>

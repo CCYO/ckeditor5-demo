@@ -3,6 +3,7 @@ serviceAccountKey.json
 build
 config
 *.rdb
+.vscode
 
 # Logs
 logs

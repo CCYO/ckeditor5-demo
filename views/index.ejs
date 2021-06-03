@@ -5,13 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首頁</title>
-    <link rel="stylesheet" href="./styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
 </head>
 <body>
+    <% if (alert_msg.length) { %>
+        <script>alert('<%= alert_msg %>')</script>
+    <% } %>
     <% if( login ){ %>
-        <h1>歡迎你!! <%= user %>～</h1>
+        <h1>歡迎你!! <%= email %>～</h1>
+        <h1>ID => <%= id %>～</h1>
     <% } else { %>
         <form action="/user" method="POST" id="login">
             【信箱】<input type="text" name="email"><br>
@@ -24,7 +27,7 @@
             <button type="submit">註冊</button>
         </form>
     <% } %>
-    <% for( let i ; blog.length > i ; i++ ){ %>
+    <% for( blog of blogs ){ %>
         <div>
             <a href="/blog/<%= blog.id %>"><%= blog.title %></a>｜<button class="del_btn" data-blogID="<%= blog.id %>">刪除</button>
         </div>

@@ -4,19 +4,32 @@ const { v4: uuidv4 } = require('uuid')
 
 const admin = require('../config/firebase-admin')
 
-const {USER_MODEL} = require('../model/user')
-const {BLOG_MODEL} = require('./model/blog')
+const passport = require('../middleware/passport')
 
-router.get('/blog', (req, res) => {
+const {USER_MODEL} = require('../model/user')
+const {BLOG_MODEL} = require('../model/blog')
+
+const { saveBlog } = require('../controller/blog')
+
+router.get('/blog', async (req, res) => {
     // 文章列表、訪問登入/註冊頁
-    // res.render('index')
+    let blogs = await BLOG_MODEL.find({email: req.user.email})
+    console.log('blogs ==> ', blogs)
+    return res.render('index', {
+        alert_msg: req.flash('alert_msg'),
+        login: req.isAuthenticated(),
+        email: req.user.email,
+        id: req.user.id,
+        blogs
+    })
 })
 
 router.post('/blog', (req, res) => {
     // 新增文章
+    
 })
 
-router.update('/blog', (req, res) => {
+router.patch('/blog', (req, res) => {
     // 更新文章
 })
 

@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     return res.render('index', {
         alert_msg: req.flash('alert_msg'),
         login: req.isAuthenticated(),
-        blog: []
+        blogs: []
     })
 })
 

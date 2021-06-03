@@ -5,11 +5,14 @@ const { v4: uuidv4 } = require('uuid')
 const admin = require('../config/firebase-admin')
 
 const passport = require('../middleware/passport')
+const isAuthenticated = require('../middleware/isAuthenticated')
 
 const {USER_MODEL} = require('../model/user')
 const {BLOG_MODEL} = require('../model/blog')
 
 const { saveBlog } = require('../controller/blog')
+
+router.use( isAuthenticated )
 
 router.get('/blog', async (req, res) => {
     // 文章列表、訪問登入/註冊頁

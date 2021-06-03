@@ -4,6 +4,7 @@
   "description": "",
   "main": "./bin/www.js",
   "scripts": {
+    "dev": "sudo PORT=80 node ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

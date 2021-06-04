@@ -39,10 +39,13 @@ router.post('/user',
     }
 )
 
-router.get('/blog/:id', (req, res) => {
+router.get('/blog/:id', async (req, res) => {
     // 顯示指定文章頁
-
     //Story.findById()
+    const {email, title, content, createTime} = await BLOG_MODEL.findById(req.params.id)
+    res.render('blog', {
+        email, title, content, createTime
+    })
 })
 
 router.use((err, req, res, next) => {

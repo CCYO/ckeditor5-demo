@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/ckeditor-styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+	文章標題<input type="text" id="title">
+    <textarea class='editor'></textarea>
+    <button id="sendBlog">建立文章</button>
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+    <script src="/ckeditor.js"></script>
+    <script>
+		ClassicEditor
+			.create( document.querySelector( '.editor' ), {
+				toolbar: {
+					items: [
+						'heading',
+						'|',
+						'bold',
+						'italic',
+						'link',
+						'bulletedList',
+						'numberedList',
+						'|',
+						'outdent',
+						'indent',
+						'|',
+						'imageInsert', // 插入圖片(自製base64機制)、url引入圖片
+						'blockQuote',
+						'insertTable',
+						'mediaEmbed',
+						'undo',
+						'redo'
+					]
+				},
+				language: 'zh',
+				image: {
+					toolbar: [
+						'imageTextAlternative',
+						'imageStyle:full',
+						'imageStyle:side',
+						'linkImage'
+					]
+				},
+				table: {
+					contentToolbar: [
+						'tableColumn',
+						'tableRow',
+						'mergeTableCells'
+					]
+				},
+				licenseKey: '',
+				imageRemoveEvent: {
+					callback: (imagesSrc, nodeObjects) => {
+						// note: imagesSrc is array of src & nodeObjects is array of nodeObject
+						// node object api: https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_node-Node.html
+						
+						// window.editor.insertImgs 是在 ckeditor 的 自定義插件 MyCustomBase64ImgUploadAdapter 定義的
+						window.editor.insertImgs = window.editor.insertImgs.filter( img => {
+							let reg = /image\/[\w\+]+;base64,([\d\w+/=]+)/
+							const [undefined, deleteImgbase64str] = reg.exec(imagesSrc[0])
+							return !( img.base64str === deleteImgbase64str )
+						})
+						
+						console.log(window.editor.insertImgs)
+					}
+				},
+			} )
+			.then( editor => {
+				window.editor = editor;
+			} )
+			.catch( error => {
+				console.error( 'Oops, something went wrong!' );
+				console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+				console.warn( 'Build id: cgox1io1ker4-rlxhpkvvq4c7' );
+				console.error( error );
+			} );
+        $('#sendBlog').click(e => {
+			let title = $('#title').val()
+            /*  取得 html 檔
+            ****    將 html 內的 <img src= base64url 更換為 uuid */
+            let content = editor.getData()
+            const reg = /data:image\/[\w\+]+;base64,[\d\w+/=]+/g
+            let uid = uuidv4()
+            content = content.replace(reg, uid)
+            
+            // 取得 圖片資訊
+            let imgs = editor.insertImgs
+            /*  後台 處理 圖片資訊 
+            ****    將 base64 存入 firebase，並回傳 url
+            ****    將 html 內的 uid 更換為 url，再將 html 存入 mongodb */
+            fetch('/user/blog', {
+                method: "POST",
+                body: JSON.stringify({ title, imgs, content , uid}),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+            .then( res => res.json() )
+            .then( ({href}) => {
+                if(href) window.location.href = href
+            })
+            .catch(e => {
+                console.log(e)
+            })
+
+        })
+    
+	</script>
+</body>
+</html>

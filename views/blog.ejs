@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="/ckeditor-styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <div class="ck-content"></div>
+    <h1><%= email %> 於 <%= createTime %> 撰寫</h1>
+    
+</body>
+<script>
+    document.querySelector('.ck-content').innerHTML = `<%- content %>`
+    /*
+    **  其他轉義方法 -1
+        x = $(".ck-content").html(x).text()
+        $(".ck-content").html(x)
+
+        其他轉義方法 -2
+        var entityMap = {
+            escape: {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&apos;'
+            },
+            escape2: {
+                '"': '&#34;'
+            },
+            unescape: {
+                '&amp;': "&",
+                '&apos;': "'",
+                '&gt;': ">",
+                '&lt;': "<",
+                '&quot;': '"'
+            },
+            unescape2: {
+                '&#34;': '"'
+            }
+        };
+        var entityReg = {
+            escape: RegExp('[' + Object.keys(entityMap.escape).join('') + ']', 'g'),
+            escape2: RegExp('[' + Object.keys(entityMap.escape2).join('') + ']', 'g'),
+            unescape: RegExp('(' + Object.keys(entityMap.unescape).join('|') + ')', 'g'),
+            unescape2: RegExp('(' + Object.keys(entityMap.unescape2).join('|') + ')', 'g')
+        }
+
+        // 将HTML转义为实体
+        function escape(html) {
+            if (typeof html !== 'string') return ''
+            return html.replace(entityReg.escape, function(match) {
+                return entityMap.escape[match]
+            })
+        }
+        function escape2(html) {
+            if (typeof html !== 'string') return ''
+            return html.replace(entityReg.escape2, function(match) {
+                return entityMap.escape2[match]
+            })
+        }
+
+        // 将实体转回为HTML
+        function unescape(str) {
+            if (typeof str !== 'string') return ''
+            return str.replace(entityReg.unescape, function(match) {
+                return entityMap.unescape[match]
+            })
+        }
+        function unescape2(str) {
+            if (typeof str !== 'string') return ''
+            return str.replace(entityReg.unescape2, function(match) {
+                return entityMap.unescape2[match]
+            })
+        }
+        var y = unescape(xx)
+        y = unescape2(y)
+        document.querySelector('.ck-content').innerHTML = y
+    */
+</script>
+</html>

@@ -15,6 +15,7 @@
     <% if( login ){ %>
         <h1>歡迎你!! <%= email %>～</h1>
         <h1>ID => <%= id %>～</h1>
+        <a href='/user/edit'>創建新文章</button>
     <% } else { %>
         <form action="/user" method="POST" id="login">
             【信箱】<input type="text" name="email"><br>

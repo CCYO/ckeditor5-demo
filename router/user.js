@@ -11,8 +11,14 @@ const {USER_MODEL} = require('../model/user')
 const {BLOG_MODEL} = require('../model/blog')
 
 const { saveBlog } = require('../controller/blog')
+const { uploadImg } = require('../controller/storage')
 
 router.use( isAuthenticated )
+
+
+router.get('/edit', async(req, res) => {
+    return res.render('edit')
+})
 
 router.get('/blog', async (req, res) => {
     // 文章列表、訪問登入/註冊頁
@@ -27,9 +33,28 @@ router.get('/blog', async (req, res) => {
     })
 })
 
-router.post('/blog', (req, res) => {
+router.post('/blog', async (req, res) => {
     // 新增文章
-    
+    console.log('POST')
+    let { title, imgs, content, uid } = req.body
+    //  將 imgs 存入 firebase
+    //  @urls: [url, url, ...]
+    let urls = await uploadImg(title, imgs)
+    let reg = new RegExp(uid)
+    for(url of urls){
+        content = content.replace(reg, url)
+    }
+    const { email } = req.user
+    let blog = new BLOG_MODEL({
+        email,
+        title,
+        content
+    })
+    await blog.save()
+    blog = await BLOG_MODEL.findOne({email, title})
+    console.log('blog id ==> ', blog.id)
+    console.log('blog _id ==> ', blog._id)
+    return res.json({href: `/blog/${blog._id}`})
 })
 
 router.patch('/blog', (req, res) => {

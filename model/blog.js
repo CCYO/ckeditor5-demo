@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const BLOG_SCHEMA = new mongoose.Schema({
     email: { type: String, require: true},
     title: { type: String, required: true },
-    html: { type: String, required: true }
+    content: { type: String, required: true },
+    createTime: {type: Date, default: Date.now}
 })
 
 // 創建 collection, 在 mongodb 此 collection 會被自動命名為 Users
